@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using DealerTrack.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.IO;
+using Microsoft.AspNetCore.Http;
+using System.Text;
 
-namespace react_dotnet_example.Controllers
+namespace DealerTrack.Controllers
 {
   [ApiController]
   public class UsersController : ControllerBase
@@ -23,30 +22,34 @@ namespace react_dotnet_example.Controllers
       _logger = logger;
     }
 
-    // [HttpGet]
-    // [Route("api/users")]
-    // public IEnumerable<Models.UserModel> GetAllUsers()
-    // {
-    //   return repository.GetAll();
-    // }
-
-    // [HttpPost]
-    // [Route("api/user")]
-    // [Consumes("application/json")]
-    // public Models.UserModel PostUser(Models.UserModel item)
-    // {
-    //   return repository.Add(item);
-    // }
-
     [HttpPost]
-    [Route("api/vehicle")]
-    [Consumes("application/json")]
-    public IEnumerable<Vehicle> Get()
+    [Route("api/ImportFile")]
+    [Consumes("multipart/form-data")]
+    public async Task<List<Vehicle>> ImportFile([FromForm] IFormFile file)
     {
-      return System.IO.File.ReadAllLines("C:/Users/ramso/Downloads/CSV.csv")
-                                            .Skip(1)
-                                            .Select(v => TransformVehicle(v))
-                                            .ToList();
+      var vehicles = new List<Vehicle>();
+      string name = file.FileName;
+      string extension = Path.GetExtension(file.FileName);
+      using (var memoryStream = new MemoryStream())
+      {
+        file.CopyTo(memoryStream);
+        if (file.FileName.EndsWith(".csv"))
+        {
+          using (var sreader = new StreamReader(file.OpenReadStream(), Encoding.GetEncoding("iso-8859-1")))
+          {
+            string[] headers = sreader.ReadLine().Split(',');
+            while (!sreader.EndOfStream)
+            {
+              vehicles.Add(TransformVehicle(sreader.ReadLine()));
+            }
+          }
+        }
+        else
+        {
+          _logger.LogError("Incorrect type of file.");
+        }
+        return vehicles;
+      }
     }
 
     private Vehicle TransformVehicle(string csvLine)
@@ -57,7 +60,7 @@ namespace react_dotnet_example.Controllers
       {
         if (columns[i].Contains("\""))
         {
-          var value = (columns[i] + columns[i + 1]).Replace("\"", "");
+          var value = (columns[i] + ',' + columns[i + 1]).Replace("\"", "");
           result.Add(value);
           i++;
         }
@@ -66,13 +69,14 @@ namespace react_dotnet_example.Controllers
           result.Add(columns[i]);
         }
       }
+
       return new Vehicle
       {
         dealNumber = Int32.Parse(result[0]),
         customerName = result[1].ToString(),
         dealerShipName = result[2].ToString(),
         vehicle = result[3].ToString(),
-        price = result[4].ToString(),
+        price = "CAD$" + result[4].ToString(),
         date = result[5].ToString()
       };
     }

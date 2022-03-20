@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace react_dotnet_example
+namespace DealerTrack
+
 {
   public class Program
   {

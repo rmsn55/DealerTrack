@@ -7,7 +7,7 @@
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-    <RootNamespace>react_dotnet_example</RootNamespace>
+    <RootNamespace>DealerTrack</RootNamespace>
     
   </PropertyGroup>
 

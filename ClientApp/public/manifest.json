@@ -1,6 +1,6 @@
 {
-  "short_name": "react_dotnet_example",
-  "name": "react_dotnet_example",
+  "short_name": "DealerTrack",
+  "name": "DealerTrack",
   "icons": [
     {
       "src": "favicon.ico",

@@ -10,7 +10,7 @@ export const Vehicle = ({ vehicles }) => {
         <td>{vehicle.customerName}</td>
         <td>{vehicle.dealerShipName}</td>
         <td>{vehicle.vehicle}</td>
-        <td>{vehicle.price}</td>
+        <td>{vehicle.price}.00</td>
         <td>{vehicle.date}</td>
       </tr>
     );
