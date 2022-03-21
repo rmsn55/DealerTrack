@@ -11,13 +11,13 @@ using System.Text;
 namespace DealerTrack.Controllers
 {
   [ApiController]
-  public class UsersController : ControllerBase
+  public class VehiclesController : ControllerBase
   {
 
-    private readonly ILogger<UsersController> _logger;
+    private readonly ILogger<VehiclesController> _logger;
 
 
-    public UsersController(ILogger<UsersController> logger)
+    public VehiclesController(ILogger<VehiclesController> logger)
     {
       _logger = logger;
     }
